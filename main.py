@@ -59,13 +59,13 @@ checker_black = pygame.transform.scale(checker_black, (100, 100))
 
 
 class Checker():
-    def __init__(self, name, checker_color, border, queen, x_coord, y_coord):
+    def __init__(self, name, checker_color, border, queen, x, y):
         self.name = name
         self.checker_color = checker_color
         self.border = border
         self.queen = queen
-        self.x_coord = x_coord
-        self.y_coord = y_coord
+        self.x = x
+        self.y = y
 
     def ris_checker(self):
         pass
