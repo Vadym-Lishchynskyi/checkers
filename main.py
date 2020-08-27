@@ -3,7 +3,8 @@ pygame.init()
 
 size = width, height = 1130, 830
 white = 255, 255, 255
-black = 133, 133, 133
+grey = 133, 133, 133
+black = 0, 0, 0
 red = 250, 0, 0
 brown = 153, 51, 51
 
@@ -16,7 +17,7 @@ for i in range(64):
     if n:
         pygame.draw.rect(screen, white, (x, y, 100, 100))
     else:
-        pygame.draw.rect(screen, black, (x, y, 100, 100))
+        pygame.draw.rect(screen, grey, (x, y, 100, 100))
     x += 100
     n = not n
     if x > 700:
@@ -26,7 +27,7 @@ for i in range(64):
 
 # рисуем название ячеек
 # добавляем название ячеек сразу
-f1 = pygame.font.SysFont('serif', 26)
+f1 = pygame.font.SysFont('serif', 27)
 x_names = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
 x, y = 0, 800
@@ -57,8 +58,62 @@ checker_white = pygame.transform.scale(checker_white, (100, 100))
 checker_black = pygame.transform.scale(checker_black, (100, 100))
 
 
-class Checker:
-    pass
+class Checker():
+    def __init__(self, name, checker_color, border, queen, x_coord, y_coord):
+        self.name = name
+        self.checker_color = checker_color
+        self.border = border
+        self.queen = queen
+        self.x_coord = x_coord
+        self.y_coord = y_coord
+
+    def ris_checker(self):
+        pass
+
+    def ris_block(self):
+        pass
+
+
+names1 = ['b1', 'd1', 'f1', 'h1',
+          'a2', 'c2', 'e2', 'g2',
+          'b3', 'd3', 'f3', 'h3',
+          'a4', 'c4', 'e4', 'g4',
+          'b5', 'd5', 'f5', 'h5',
+          'a6', 'c6', 'e6', 'g6',
+          'b7', 'd7', 'f7', 'h7',
+          'a8', 'c8', 'e8', 'g8']
+
+# checker_color
+# 0 - пустой
+# 1 - белый
+# 2 - чорный
+# border - 1/0
+# queen - 1/0
+
+arr = list()
+n = False
+x_coord, y_coord = 0, 0
+for i in range(32):
+    if i % 8 == 0:
+        n = not n
+    if n:
+        x_coord = 100
+        n = not n
+    if i < 12:
+        arr.append(Checker(names1[i], 1, 0, 0, x_coord, y_coord))
+        screen.blit(checker_black, (x_coord, y_coord))
+    elif i < 20:
+        arr.append(Checker(names1[i], 0, 0, 0, x_coord, y_coord))
+    else:
+        arr.append(Checker(names1[i], 2, 0, 0, x_coord, y_coord))
+        screen.blit(checker_white, (x_coord, y_coord))
+    x_coord += 200
+    if x_coord > 700:
+        y_coord += 100
+        x_coord = 0
+
+for i in range(32):
+    print(arr[i].x_coord, arr[i].y_coord)
 
 
 
