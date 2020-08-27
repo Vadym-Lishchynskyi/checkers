@@ -1,7 +1,7 @@
 import sys, pygame
 pygame.init()
 
-size = width, height = 1020, 820
+size = width, height = 1130, 830
 white = 255, 255, 255
 black = 133, 133, 133
 red = 250, 0, 0
@@ -25,18 +25,27 @@ for i in range(64):
         n = not n
 
 # рисуем название ячеек
+# добавляем название ячеек сразу
+f1 = pygame.font.SysFont('serif', 26)
+x_names = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+
 x, y = 0, 800
 for i in range(8):
-    pygame.draw.rect(screen, white, (x, y, 100, 20))
-    pygame.draw.rect(screen, brown, (x, y, 98, 20),4)
+    pygame.draw.rect(screen, white, (x, y, 100, 30))
+    pygame.draw.rect(screen, brown, (x, y, 98, 30), 4)
+    t1 = f1.render(x_names[i], 0, (black))
+    screen.blit(t1, (x + 44, y))
     x += 100
 
 x, y = 800, 0
 for i in range(8):
-    pygame.draw.rect(screen, white, (x, y, 20, 100))
-    pygame.draw.rect(screen, brown, (x, y, 20, 98),4)
+    pygame.draw.rect(screen, white, (x, y, 30, 100))
+    pygame.draw.rect(screen, brown, (x, y, 30, 98), 4)
+    t1 = f1.render(str(i+1), 0, (black))
+    screen.blit(t1, (x+7, y+40))
     y += 100
-pygame.draw.rect(screen, brown, (798, 798, 24, 23))
+pygame.draw.rect(screen, brown, (798, 798, 34, 32))
+
 
 
 # загружаем картинки
