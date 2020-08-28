@@ -67,11 +67,16 @@ class Checker():
         self.x = x
         self.y = y
 
+    def checked(self):
+        pass
+
     def ris_checker(self):
         pass
 
     def ris_block(self):
         pass
+
+
 
 
 names1 = ['b1', 'd1', 'f1', 'h1',
@@ -112,12 +117,13 @@ for i in range(32):
         y_coord += 100
         x_coord = 0
 
-for i in range(32):
-    print(arr[i].x_coord, arr[i].y_coord)
 
-
-
-
+def find_exemplar(x, y):
+    x, y = (x // 100) * 100, (y // 100) * 100
+    print(x, y)
+    for i in arr:
+        if i.x == x and i.y == y:
+            return i
 
 
 
@@ -127,6 +133,11 @@ while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
 
-
-
+        if pygame.mouse.get_pressed() == (1, 0, 0):
+            x, y = pygame.mouse.get_pos()
+            checker = find_exemplar(x, y)
+            try:
+                print(checker.name)
+            except AttributeError:
+                print(0)
         pygame.display.update()
