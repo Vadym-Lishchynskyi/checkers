@@ -68,12 +68,67 @@ class Checker:
 
     def checked(self):
         pygame.draw.rect(screen, green, (self.x, self.y, 99, 99), 2)
+        # self.possible_hod()
 
-    def ris_checker(self):
-        pass
+    def possible_hod(self):
+        if self.queen:
+            pass
+        else:
+            # ищем клетки куда можно походить в зависимости от цыета ходящего
+            # возможные клетки записываем в масив hodim
+            hodim = list()
+            a = x_names.index(self.name[:1])
+            print(a)
+            if a > 0:
+                hodim.append(x_names[a - 1])
+            if a < 7:
+                hodim.append(x_names[a + 1])
+            if hod:
+                for i in range(len(hodim)):
+                    hodim[i] += str(int(self.name[1:]) + 1)
+            else:
+                for i in range(len(hodim)):
+                    hodim[i] += str(int(self.name[1:]) - 1)
+            print(hodim)
 
-    def ris_block(self):
-        pass
+
+    def possible_kick(self):
+        if self.queen:
+            pass
+        else:
+            pos_kicks = list()
+            num = 0
+            semicolored = list()
+            for i in arr:
+                if i.checker_color == hod:
+                    num += 1
+                    semicolored.append(i.name)
+            print(semicolored)
+            for j in semicolored:
+                kick = list()
+                a = x_names.index(j[:1])
+                try:
+                    kick.append(x_names[a-1])
+                    kick.append(x_names[a+1])
+                except IndexError:
+                    pass
+
+                kick += kick[:]
+                b = [int(j[1:])-1, int(j[1:])+1]
+
+                for i in range(2):
+                    kick[i] += str(b[0])
+                for i in range(2, 4):
+                    kick[i] += str(b[1])
+                print(kick)
+
+                pos_kicks.append(kick)
+
+
+
+
+
+
 
 
 names1 = ['b1', 'd1', 'f1', 'h1',
@@ -91,6 +146,7 @@ names1 = ['b1', 'd1', 'f1', 'h1',
 # 1 - чорный
 # border - 1/0
 # queen - 1/0
+# создаем список обектов для каждой чорной ячейки, также придаем каждому свое значение.
 
 arr = list()
 n = False
@@ -126,7 +182,7 @@ def find_exemplar(x, y, h):
 # True - ходит чорный
 
 
-hod = False
+hod = True
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
@@ -137,6 +193,7 @@ while 1:
             try:
                 print(checker.name)
                 checker.checked()
+                checker.possible_hod()
             except AttributeError:
                 del checker
 
