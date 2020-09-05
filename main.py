@@ -66,19 +66,26 @@ class Checker:
         self.x = x
         self.y = y
 
+    def click_1(self):
+        # self.possible_kick()
+        self.checked()
+        self.possible_hod()
+        # self.click_2()
+
+    # def click_2(self):
+
+
     def checked(self):
         pygame.draw.rect(screen, green, (self.x, self.y, 99, 99), 2)
-        # self.possible_hod()
 
     def possible_hod(self):
         if self.queen:
             pass
         else:
-            # ищем клетки куда можно походить в зависимости от цыета ходящего
+            # ищем клетки куда можно походить в зависимости от цвета ходящего
             # возможные клетки записываем в масив hodim
             hodim = list()
             a = x_names.index(self.name[:1])
-            print(a)
             if a > 0:
                 hodim.append(x_names[a - 1])
             if a < 7:
@@ -89,7 +96,18 @@ class Checker:
             else:
                 for i in range(len(hodim)):
                     hodim[i] += str(int(self.name[1:]) - 1)
-            print(hodim)
+
+            # проверка заняты ли клетки спереди, если да - удаляем
+            for i in arr:
+                if i.name in hodim:
+                    if i.checker_color != 2:
+                        hodim.remove(i.name)
+            if not hodim:
+                print('Ходов у данной шашки нет')
+                del hodim
+            else:
+                self.hodim = hodim
+                print(self.hodim)
 
 
     def possible_kick(self):
@@ -182,21 +200,27 @@ def find_exemplar(x, y, h):
 # True - ходит чорный
 
 
-hod = True
+# считываем клик и находим обект на который кликнули
+def clicks():
+    if pygame.mouse.get_pressed() == (1, 0, 0):
+        x, y = pygame.mouse.get_pos()
+        checker = find_exemplar(x, y, hod)
+        return checker
+
+
+hod = False
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
 
-        if pygame.mouse.get_pressed() == (1, 0, 0):
-            x, y = pygame.mouse.get_pos()
-            checker = find_exemplar(x, y, hod)
-            try:
-                print(checker.name)
-                checker.checked()
-                checker.possible_hod()
-            except AttributeError:
-                del checker
-
+        checker = clicks()
+        try:
+            print(checker.name)
+            # checker.checked()
+            # checker.possible_hod()
+            checker.click_1()
+        except AttributeError:
+            del checker
 
 
         pygame.display.update()
