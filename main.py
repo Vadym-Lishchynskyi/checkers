@@ -1,4 +1,5 @@
 import sys, pygame
+from pygame.locals import *
 pygame.init()
 
 size = width, height = 1130, 830
@@ -11,14 +12,33 @@ brown = 153, 51, 51
 
 screen = pygame.display.set_mode(size)
 
-# Создание доски
+# загружаем картинки
+checker_white = pygame.image.load('images/white.png')
+checker_black = pygame.image.load('images/black.png')
+
+# уменьшаем их в размере
+checker_white = pygame.transform.scale(checker_white, (100, 100))
+checker_black = pygame.transform.scale(checker_black, (100, 100))
+
+
+# Создание доски, draw_checker и draw_back используються с обектами в функциях класа
+def draw_checker(color, pos_x, pos_y):
+    screen.blit(color, (pos_x, pos_y))
+    """рисует шашки разных цветов"""
+
+
+def draw_back():
+    pygame.draw.rect(screen, grey, (x, y, 100, 100))
+    """рисуем серый фон для шашек"""
+
+
 x, y = 0, 0
 n = True
 for i in range(64):
     if n:
         pygame.draw.rect(screen, white, (x, y, 100, 100))
     else:
-        pygame.draw.rect(screen, grey, (x, y, 100, 100))
+        draw_back()
     x += 100
     n = not n
     if x > 700:
@@ -48,15 +68,8 @@ for i in range(8):
     y += 100
 pygame.draw.rect(screen, brown, (798, 798, 34, 32))
 
-# загружаем картинки
-checker_white = pygame.image.load('images/white.png')
-checker_black = pygame.image.load('images/black.png')
 
-# уменьшаем их в размере
-checker_white = pygame.transform.scale(checker_white, (100, 100))
-checker_black = pygame.transform.scale(checker_black, (100, 100))
-
-
+# Создаем главный клас - чорная клетка
 class Checker:
     def __init__(self, name, checker_color, border, queen, x, y):
         self.name = name
@@ -70,9 +83,23 @@ class Checker:
         # self.possible_kick()
         self.checked()
         self.possible_hod()
-        # self.click_2()
 
-    # def click_2(self):
+    def click_2(self):
+        pygame.event.clear()
+        k = pygame.event.wait()
+        if k == MOUSEBUTTONDOWN:
+            x, y = event.pos
+
+        # pygame.event.wait()
+        # for event in pygame.event.get():
+        #     if event.type == MOUSEBUTTONDOWN:
+        #         x, y = event.pos
+        #         print('x =',x, ' y =',y)
+
+        # if checker_2.name in self.hodim:
+        #     print(checker.name)
+        #     print(checker_2.name)
+        # pass
 
 
     def checked(self):
@@ -102,13 +129,14 @@ class Checker:
                 if i.name in hodim:
                     if i.checker_color != 2:
                         hodim.remove(i.name)
+
             if not hodim:
                 print('Ходов у данной шашки нет')
                 del hodim
             else:
                 self.hodim = hodim
                 print(self.hodim)
-
+                self.click_2()
 
     def possible_kick(self):
         if self.queen:
@@ -143,12 +171,6 @@ class Checker:
                 pos_kicks.append(kick)
 
 
-
-
-
-
-
-
 names1 = ['b1', 'd1', 'f1', 'h1',
           'a2', 'c2', 'e2', 'g2',
           'b3', 'd3', 'f3', 'h3',
@@ -164,7 +186,9 @@ names1 = ['b1', 'd1', 'f1', 'h1',
 # 1 - чорный
 # border - 1/0
 # queen - 1/0
-# создаем список обектов для каждой чорной ячейки, также придаем каждому свое значение.
+# создаем список обектов для каждой чорной ячейки, также придаем каждому свое значение. Также сразу рисуем шашки всех
+# цветов
+
 
 arr = list()
 n = False
@@ -177,12 +201,12 @@ for i in range(32):
         n = not n
     if i < 12:
         arr.append(Checker(names1[i], 1, 0, 0, x_coord, y_coord))
-        screen.blit(checker_black, (x_coord, y_coord))
+        draw_checker(checker_black, x_coord, y_coord)
     elif i < 20:
         arr.append(Checker(names1[i], 2, 0, 0, x_coord, y_coord))
     else:
         arr.append(Checker(names1[i], 0, 0, 0, x_coord, y_coord))
-        screen.blit(checker_white, (x_coord, y_coord))
+        draw_checker(checker_white, x_coord, y_coord)
     x_coord += 200
     if x_coord > 700:
         y_coord += 100
@@ -202,11 +226,18 @@ def find_exemplar(x, y, h):
 
 # считываем клик и находим обект на который кликнули
 def clicks():
-    if pygame.mouse.get_pressed() == (1, 0, 0):
-        x, y = pygame.mouse.get_pos()
-        checker = find_exemplar(x, y, hod)
-        return checker
-
+    # if pygame.mouse.get_pressed() == (1, 0, 0):
+    #     x, y = pygame.mouse.get_pos()
+    #     checker_general = find_exemplar(x, y, hod)
+    #     pygame.event.clear()
+    #     return checker_general
+    k = pygame.event.wait()
+    if k == MOUSEBUTTONDOWN:
+        x, y = event.pos
+        print(x,'  ',y)
+        checker_general = find_exemplar(x, y, hod)
+        pygame.event.clear()
+        return checker_general
 
 hod = False
 while 1:
