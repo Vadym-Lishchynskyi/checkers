@@ -1,5 +1,5 @@
 import sys, pygame
-from pygame.locals import *
+# from pygame.locals import *
 pygame.init()
 
 size = width, height = 1130, 830
@@ -79,32 +79,40 @@ class Checker:
         self.x = x
         self.y = y
 
+    """__________________________ Logic __________________________"""
     def click_1(self):
         # self.possible_kick()
-        self.checked()
-        self.possible_hod()
+        self.checked(green)
+        hodim = self.possible_hod()
+        self.highlight_variants(hodim)
 
-    def click_2(self):
-        pygame.event.clear()
-        k = pygame.event.wait()
-        if k == MOUSEBUTTONDOWN:
-            x, y = event.pos
+        return hodim
 
-        # pygame.event.wait()
-        # for event in pygame.event.get():
-        #     if event.type == MOUSEBUTTONDOWN:
-        #         x, y = event.pos
-        #         print('x =',x, ' y =',y)
+    def click_2(self, hodim_prev_obj):
 
-        # if checker_2.name in self.hodim:
-        #     print(checker.name)
-        #     print(checker_2.name)
-        # pass
+        print(hodim_prev_obj)
+        if self.name in hodim_prev_obj:
+            print('Previous = ', checker.name)
+            print('Now = ', checker_2.name)
+
+    """__________________________ Moving __________________________"""
+    def checked(self, color):
+        pygame.draw.rect(screen, color, (self.x, self.y, 99, 99), 2)
+
+    def highlight_variants(self, variants):
+        for i in arr:
+            if i.name in variants:
+                i.checked(red)
+
+    def motion_hod(self):
+        pass
+
+    def motion_kick(self):
+        pass
 
 
-    def checked(self):
-        pygame.draw.rect(screen, green, (self.x, self.y, 99, 99), 2)
 
+    """__________________________ Checking __________________________"""
     def possible_hod(self):
         if self.queen:
             pass
@@ -134,9 +142,7 @@ class Checker:
                 print('Ходов у данной шашки нет')
                 del hodim
             else:
-                self.hodim = hodim
-                print(self.hodim)
-                self.click_2()
+                return hodim
 
     def possible_kick(self):
         if self.queen:
@@ -216,8 +222,9 @@ for i in range(32):
 def find_exemplar(x, y, h):
     x, y = (x // 100) * 100, (y // 100) * 100
     for i in arr:
-        if i.x == x and i.y == y and i.checker_color == h:
-            return i
+        if i.x == x and i.y == y:
+            if i.checker_color == h or i.checker_color == 2:
+                return i
 
 # главный цикл
 # False  - ходит белый
@@ -225,33 +232,65 @@ def find_exemplar(x, y, h):
 
 
 # считываем клик и находим обект на который кликнули
-def clicks():
-    # if pygame.mouse.get_pressed() == (1, 0, 0):
-    #     x, y = pygame.mouse.get_pos()
-    #     checker_general = find_exemplar(x, y, hod)
-    #     pygame.event.clear()
-    #     return checker_general
-    k = pygame.event.wait()
-    if k == MOUSEBUTTONDOWN:
-        x, y = event.pos
-        print(x,'  ',y)
-        checker_general = find_exemplar(x, y, hod)
-        pygame.event.clear()
-        return checker_general
+def clicks_on_board():
+    x, y = event.pos
+    checker_general = find_exemplar(x, y, hod)
+    # pygame.event.clear()
+    return checker_general
 
+
+# kl - клик( у нас их два)
+# True = первый клик
+# False = второй
+kl = True
 hod = False
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
 
-        checker = clicks()
-        try:
-            print(checker.name)
-            # checker.checked()
-            # checker.possible_hod()
-            checker.click_1()
-        except AttributeError:
-            del checker
+        if pygame.mouse.get_pressed() == (1, 0, 0):
+            x, y = event.pos
+            if x > 800 or y > 800:
+                pass
+            else:
+                if kl:
+                    checker = clicks_on_board()
+                    try:
+                        print(checker.name)
+                        hodim = checker.click_1()
+                        kl = not kl
+                    except AttributeError:
+                        del checker
+                else:
+                    checker_2 = clicks_on_board()
+                    try:
+                        print(checker_2.name)
+                        checker_2.checked(red)
+                        checker_2.click_2(hodim)
+                        kl = not kl
+                        hod = not hod
+                    except AttributeError:
+                        del checker_2
+
+
+
+
+        # if kl:
+        #     checker = clicks()
+        #     try:
+        #         print(checker.name)
+        #         checker.click_1()
+        #     except AttributeError:
+        #         del checker
+        #     kl = not kl
+        # else:
+        #     checker_2 = clicks()
+        #     try:
+        #         print(checker_2.name)
+        #         checker_2.click_2()
+        #     except AttributeError:
+        #         del checker_2
+        #     kl = not kl
 
 
         pygame.display.update()
