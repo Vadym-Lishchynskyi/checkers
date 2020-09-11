@@ -1,4 +1,5 @@
 import sys, pygame
+# from pygame.locals import *
 pygame.init()
 
 size = width, height = 1130, 830
@@ -26,8 +27,8 @@ def draw_checker(color, pos_x, pos_y):
     """рисует шашки разных цветов"""
 
 
-def draw_back():
-    pygame.draw.rect(screen, grey, (x, y, 100, 100))
+def draw_back(xx, yy):
+    pygame.draw.rect(screen, grey, (xx, yy, 100, 100))
     """рисуем серый фон для шашек"""
 
 
@@ -37,7 +38,7 @@ for i in range(64):
     if n:
         pygame.draw.rect(screen, white, (x, y, 100, 100))
     else:
-        draw_back()
+        draw_back(x, y)
     x += 100
     n = not n
     if x > 700:
@@ -88,6 +89,8 @@ class Checker:
         return hodim
 
     def click_2(self, hodim_prev_obj):
+        self.un_checked(hodim_prev_obj)
+        self.checked(brown)
 
         print(hodim_prev_obj)
         if self.name in hodim_prev_obj:
@@ -103,47 +106,49 @@ class Checker:
             if i.name in variants:
                 i.checked(red)
 
+    def un_checked(self, to_uncheck):
+        pass
+
+    def del_checker(self):
+        pass
+
     def motion_hod(self):
         pass
 
     def motion_kick(self):
         pass
 
-
-
     """__________________________ Checking __________________________"""
     def possible_hod(self):
         if self.queen:
             pass
         else:
-            # ищем клетки куда можно походить в зависимости от цыета ходящего
+            # ищем клетки куда можно походить в зависимости от цвета ходящего
             # возможные клетки записываем в масив hodim
-            hodim = list()
+            ar = list()
             a = x_names.index(self.name[:1])
-            print(a)
             if a > 0:
-                hodim.append(x_names[a - 1])
+                ar.append(x_names[a - 1])
             if a < 7:
-                hodim.append(x_names[a + 1])
+                ar.append(x_names[a + 1])
             if hod:
-                for i in range(len(hodim)):
-                    hodim[i] += str(int(self.name[1:]) + 1)
+                for i in range(len(ar)):
+                    ar[i] += str(int(self.name[1:]) + 1)
             else:
-                for i in range(len(hodim)):
-                    hodim[i] += str(int(self.name[1:]) - 1)
-            print(hodim)
+                for i in range(len(ar)):
+                    ar[i] += str(int(self.name[1:]) - 1)
 
             # проверка заняты ли клетки спереди, если да - удаляем
             for i in arr:
-                if i.name in hodim:
+                if i.name in ar:
                     if i.checker_color != 2:
-                        hodim.remove(i.name)
+                        ar.remove(i.name)
 
-            if not hodim:
+            if not ar:
                 print('Ходов у данной шашки нет')
-                del hodim
+                del ar
             else:
-                return hodim
+                return ar
 
     def possible_kick(self):
         if self.queen:
@@ -240,7 +245,7 @@ def clicks_on_board():
     return checker_general
 
 
-# kl - клик( у нас их два)
+# kl - клик( у нас их два) - не міняти на false
 # True = первый клик
 # False = второй
 kl = True
@@ -265,33 +270,11 @@ while 1:
                 else:
                     checker_2 = clicks_on_board()
                     try:
+                        if checker_2.checker_color == 2:
+                            pass
+                        else:
+                            pass
                         print(checker_2.name)
-                        checker_2.checked(red)
-                        checker_2.click_2(hodim)
-                        kl = not kl
-                        hod = not hod
-                    except AttributeError:
-                        del checker_2
-
-
-        if pygame.mouse.get_pressed() == (1, 0, 0):
-            x, y = event.pos
-            if x > 800 or y > 800:
-                pass
-            else:
-                if kl:
-                    checker = clicks_on_board()
-                    try:
-                        print(checker.name)
-                        hodim = checker.click_1()
-                        kl = not kl
-                    except AttributeError:
-                        del checker
-                else:
-                    checker_2 = clicks_on_board()
-                    try:
-                        print(checker_2.name)
-                        checker_2.checked(red)
                         checker_2.click_2(hodim)
                         kl = not kl
                         hod = not hod
