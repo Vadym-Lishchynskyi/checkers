@@ -84,33 +84,46 @@ class Checker:
         # self.possible_kick()
         self.checked(green)
         hodim = self.possible_hod()
+        print('hodim = ', hodim)
         self.highlight_variants(hodim)
 
         return hodim
 
     def click_2(self, hodim_prev_obj):
-        self.un_checked(hodim_prev_obj)
-        self.checked(brown)
-
-        print(hodim_prev_obj)
         if self.name in hodim_prev_obj:
+            hodim_prev_obj.append(checker.name)
+            hodim_prev_obj = find_by_name(hodim_prev_obj)
+            self.del_checker(hodim_prev_obj)
+            if hod:
+                color = checker_black
+            else:
+                color = checker_white
+            draw_checker(color, self.x, self.y)
+            self.checker_color = hod
+            checker.checker_color = 2
             print('Previous = ', checker.name)
             print('Now = ', checker_2.name)
+            print('///////////////////////////////////////////////////////////')
 
     """__________________________ Moving __________________________"""
     def checked(self, color):
         pygame.draw.rect(screen, color, (self.x, self.y, 99, 99), 2)
 
     def highlight_variants(self, variants):
-        for i in arr:
-            if i.name in variants:
-                i.checked(red)
+        try:
+            for i in arr:
+                if i.name in variants:
+                    i.checked(red)
+        except TypeError:
+            self.un_checked()
 
-    def un_checked(self, to_uncheck):
-        pass
+    def un_checked(self):
+        draw_back(self.x, self.y)
+        draw_checker(checker_white if hod == 0 else checker_black, self.x, self.y)
 
-    def del_checker(self):
-        pass
+    def del_checker(self, to_uncheck):
+        for i in to_uncheck:
+            draw_back(i.x, i.y)
 
     def motion_hod(self):
         pass
@@ -200,8 +213,6 @@ names1 = ['b1', 'd1', 'f1', 'h1',
 # queen - 1/0
 # создаем список обектов для каждой чорной ячейки, также придаем каждому свое значение. Также сразу рисуем шашки всех
 # цветов
-
-
 arr = list()
 n = False
 x_coord, y_coord = 0, 0
@@ -225,16 +236,21 @@ for i in range(32):
         x_coord = 0
 
 
+def find_by_name(to_find):
+    res = list()
+    for i in arr:
+        for j in to_find:
+            if i.name == j:
+                res.append(i)
+    return res
+
+
 def find_exemplar(x, y, h):
     x, y = (x // 100) * 100, (y // 100) * 100
     for i in arr:
         if i.x == x and i.y == y:
             if i.checker_color == h or i.checker_color == 2:
                 return i
-
-# главный цикл
-# False  - ходит белый
-# True - ходит чорный
 
 
 # считываем клик и находим обект на который кликнули
@@ -244,10 +260,13 @@ def clicks_on_board():
     # pygame.event.clear()
     return checker_general
 
-
+# главный цикл
 # kl - клик( у нас их два) - не міняти на false
 # True = первый клик
 # False = второй
+# hod:
+# False  - ходит белый
+# True - ходит чорный
 kl = True
 hod = False
 while 1:
@@ -264,7 +283,10 @@ while 1:
                     try:
                         print(checker.name)
                         hodim = checker.click_1()
-                        kl = not kl
+                        if hodim:
+                            kl = not kl
+                        else:
+                            pass
                     except AttributeError:
                         del checker
                 else:
@@ -281,25 +303,6 @@ while 1:
                     except AttributeError:
                         del checker_2
 
-
-
-
-        # if kl:
-        #     checker = clicks()
-        #     try:
-        #         print(checker.name)
-        #         checker.click_1()
-        #     except AttributeError:
-        #         del checker
-        #     kl = not kl
-        # else:
-        #     checker_2 = clicks()
-        #     try:
-        #         print(checker_2.name)
-        #         checker_2.click_2()
-        #     except AttributeError:
-        #         del checker_2
-        #     kl = not kl
 
 
         pygame.display.update()
