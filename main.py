@@ -90,20 +90,25 @@ class Checker:
         return hodim
 
     def click_2(self, hodim_prev_obj):
-        if self.name in hodim_prev_obj:
-            hodim_prev_obj.append(checker.name)
-            hodim_prev_obj = find_by_name(hodim_prev_obj)
-            self.del_checker(hodim_prev_obj)
-            if hod:
-                color = checker_black
-            else:
-                color = checker_white
-            draw_checker(color, self.x, self.y)
+        hodim_prev_obj.append(checker.name)
+        hodim_prev_obj = find_by_name(hodim_prev_obj)
+        self.del_checker(hodim_prev_obj)
+        if hod:
+            colr = checker_black
+        else:
+            colr = checker_white
+        if checker_2.checker_color == checker.checker_color:
+            draw_checker(colr, checker.x, checker.y)
+            return False
+        elif self in hodim_prev_obj:
+
+            draw_checker(colr, self.x, self.y)
             self.checker_color = hod
             checker.checker_color = 2
             print('Previous = ', checker.name)
             print('Now = ', checker_2.name)
             print('///////////////////////////////////////////////////////////')
+            return True
 
     """__________________________ Moving __________________________"""
     def checked(self, color):
@@ -245,23 +250,27 @@ def find_by_name(to_find):
     return res
 
 
-def find_exemplar(x, y, h):
+def find_exemplar(x, y, h, kol):
     x, y = (x // 100) * 100, (y // 100) * 100
     for i in arr:
         if i.x == x and i.y == y:
-            if i.checker_color == h or i.checker_color == 2:
-                return i
+            if kol:
+                if i.checker_color == h:
+                    return i
+            else:
+                if i.checker_color == h or i.checker_color == 2:
+                    return i
 
 
 # считываем клик и находим обект на который кликнули
 def clicks_on_board():
     x, y = event.pos
-    checker_general = find_exemplar(x, y, hod)
+    checker_general = find_exemplar(x, y, hod, kl)
     # pygame.event.clear()
     return checker_general
 
 # главный цикл
-# kl - клик( у нас их два) - не міняти на false
+# kl - клик( у нас их два) - не міняти на false!!!
 # True = первый клик
 # False = второй
 # hod:
@@ -291,17 +300,32 @@ while 1:
                         del checker
                 else:
                     checker_2 = clicks_on_board()
-                    try:
-                        if checker_2.checker_color == 2:
-                            pass
-                        else:
-                            pass
-                        print(checker_2.name)
-                        checker_2.click_2(hodim)
-                        kl = not kl
-                        hod = not hod
-                    except AttributeError:
-                        del checker_2
+                    if checker_2 != checker:
+                        try:
+                            # if checker_2.checker_color == checker.checker_color:
+                            #     hodim.append(checker.name)
+                            #     hodim = find_by_name(hodim)
+                            #     checker.del_checker(hodim)
+                            #     if hod:
+                            #         color = checker_black
+                            #     else:
+                            #         color = checker_white
+                            #     checker.del_checker(color, checker.x, checker.y)
+                            #     checker_2.click_1()
+                            # else:
+                                if checker_2.checker_color == 2:
+                                    pass
+                                else:
+                                    pass
+                                print(checker_2.name)
+                                a = checker_2.click_2(hodim)
+                                if a:
+                                    kl = not kl
+                                    hod = not hod
+                                else:
+                                    kl = not kl
+                        except AttributeError:
+                            del checker_2
 
 
 
