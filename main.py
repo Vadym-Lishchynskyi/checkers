@@ -101,7 +101,6 @@ class Checker:
             draw_checker(colr, checker.x, checker.y)
             return False
         elif self in hodim_prev_obj:
-
             draw_checker(colr, self.x, self.y)
             self.checker_color = hod
             checker.checker_color = 2
@@ -302,31 +301,14 @@ while 1:
                     checker_2 = clicks_on_board()
                     if checker_2 != checker:
                         try:
-                            # if checker_2.checker_color == checker.checker_color:
-                            #     hodim.append(checker.name)
-                            #     hodim = find_by_name(hodim)
-                            #     checker.del_checker(hodim)
-                            #     if hod:
-                            #         color = checker_black
-                            #     else:
-                            #         color = checker_white
-                            #     checker.del_checker(color, checker.x, checker.y)
-                            #     checker_2.click_1()
-                            # else:
-                                if checker_2.checker_color == 2:
-                                    pass
-                                else:
-                                    pass
-                                print(checker_2.name)
-                                a = checker_2.click_2(hodim)
-                                if a:
-                                    kl = not kl
-                                    hod = not hod
-                                else:
-                                    kl = not kl
+                            print(checker_2.name)
+                            a = checker_2.click_2(hodim)
+                            if a:
+                                kl = not kl
+                                hod = not hod
+                            else:
+                                kl = not kl
                         except AttributeError:
                             del checker_2
-
-
 
         pygame.display.update()
